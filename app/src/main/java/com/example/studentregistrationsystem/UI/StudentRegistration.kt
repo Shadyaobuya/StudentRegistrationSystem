@@ -16,6 +16,8 @@ import com.example.studentregistrationsystem.databinding.ActivityStudentRegistra
 
 class StudentRegistration : AppCompatActivity() {
     lateinit var binding: ActivityStudentRegistrationBinding
+    //factory pattern of instantiating 1 instance of object to exist at  a time
+    //creating an object with abstraction from user
     val userViewModel:UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,29 +27,40 @@ class StudentRegistration : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        binding.btnRegister.setOnClickListener {
+            registerStudent()
+
+
+
+
+        }
+
+    }
+
+    fun registerStudent(){
         var nationalities= arrayOf("KENYAN","UGANDAN","RWANDAN","SOUTH SUDAN")
         var nationalityAdapter=ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,nationalities)
         nationalityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnationality.adapter=nationalityAdapter
-        binding.btnRegister.setOnClickListener {
-            var name=binding.etName.text.toString()
-            var email=binding.etEmail.text.toString()
-            var dob=binding.etDob.text.toString()
-            var password=binding.etPassword.text.toString()
-            var nationality=binding.spnationality.selectedItem.toString()
-            var phonenumber=binding.etPhone.text.toString()
 
-            var registrationRequest=RegistrationRequest(
-                name=name,
-                email=email,
-                dateOfBirth = dob,
-                password = password,
-                nationality = nationality,
-                phoneNumber = phonenumber
-            )
-            userViewModel.registerStudent(registrationRequest)
+        var name=binding.etName.text.toString()
+        var email=binding.etEmail.text.toString()
+        var dob=binding.etDob.text.toString()
+        var password=binding.etPassword.text.toString()
+        var nationality=binding.spnationality.selectedItem.toString()
+        var phonenumber=binding.etPhone.text.toString()
 
-        }
+        var registrationRequest=RegistrationRequest(
+            name=name,
+            email=email,
+            dateOfBirth = dob,
+            password = password,
+            nationality = nationality,
+            phoneNumber = phonenumber
+        )
+        userViewModel.registerStudent(registrationRequest)
+
         userViewModel.registrationLiveData.observe(this, {registrationResponse->
             if (!registrationResponse.studentId.isNullOrEmpty()){
                 Toast.makeText(baseContext,"Successful Registration",Toast.LENGTH_LONG).show()

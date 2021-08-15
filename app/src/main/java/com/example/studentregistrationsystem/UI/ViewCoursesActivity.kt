@@ -31,7 +31,7 @@ class ViewCoursesActivity : AppCompatActivity() {
         courseViewModel.courseLiveData.observe(this, {course->
             if (!course.isNullOrEmpty()){
                 binding.rvViewCourses.layoutManager=LinearLayoutManager(baseContext)
-                var courseAdapter=ViewCourseAdapter(courseList =course,token )
+                 var courseAdapter=ViewCourseAdapter(courseList =course,token )
                 binding.rvViewCourses.adapter=courseAdapter
             }
 

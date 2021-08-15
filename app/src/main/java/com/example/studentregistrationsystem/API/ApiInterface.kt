@@ -18,7 +18,4 @@ interface ApiInterface {
 
     @GET("/courses")
     suspend fun getCourses(@Header("access_token") token:String ):Response<List<Courses>>
-
-
-
 }
