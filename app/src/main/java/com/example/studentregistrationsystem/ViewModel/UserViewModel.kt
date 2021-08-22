@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.studentregistrationsystem.Models.LoginResponse
 import kotlinx.coroutines.launch
 
-
+//can create a class or fun
 class UserViewModel:ViewModel() {
     //observes data and updates UI in realtime
     //waits for it to change and updates UI

@@ -1,6 +1,8 @@
 package com.example.studentregistrationsystem.UI
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,11 +20,22 @@ class StudentRegistration : AppCompatActivity() {
     lateinit var binding: ActivityStudentRegistrationBinding
     //factory pattern of instantiating 1 instance of object to exist at  a time
     //creating an object with abstraction from user
+    lateinit var sharedPref:SharedPreferences
     val userViewModel:UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityStudentRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sharedPref=getSharedPreferences(Constants.SHAREDPREFS,Context.MODE_PRIVATE)
+        redirectUser()
+    }
+    fun redirectUser(){
+        var accessToken=sharedPref.getString(Constants.ACCESS_TOKEN,Constants.EMPTY_STRING)
+        if (accessToken!!.isNotEmpty()){
+            startActivity(Intent(baseContext,ViewCoursesActivity::class.java))
+        }else{
+            startActivity(Intent(baseContext,StudentLoginActivity::class.java))
+        }
     }
 
     override fun onResume() {

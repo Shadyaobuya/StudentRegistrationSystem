@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.se.omapi.Session
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.studentregistrationsystem.Models.LoginRequest
@@ -18,6 +19,7 @@ import com.example.studentregistrationsystem.databinding.ActivityStudentLoginBin
 class StudentLoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityStudentLoginBinding
     lateinit var sessionManager: SessionManager
+    lateinit var sharedPrefs:SharedPreferences
 
 
 
@@ -26,6 +28,7 @@ class StudentLoginActivity : AppCompatActivity() {
         binding= ActivityStudentLoginBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        sharedPrefs=getSharedPreferences("CODEHIVE_PREFS",Context.MODE_PRIVATE)
     }
 
     override fun onResume() {
@@ -34,6 +37,9 @@ class StudentLoginActivity : AppCompatActivity() {
        sessionManager = SessionManager(baseContext)
 
         binding.btnLogMeIn.setOnClickListener {
+            //binding.tvloginerror.visibility=View.GONE
+            binding.progressBar.visibility=View.VISIBLE
+            //
             var email=binding.etmail.text.toString()
             var password=binding.etpassword.text.toString()
             var loginRequest=LoginRequest(
@@ -43,15 +49,22 @@ class StudentLoginActivity : AppCompatActivity() {
             userViewModel.loginStudent(loginRequest)
         }
         userViewModel.loginLiveData.observe(this,{loginResponse ->
-            if (!loginResponse.studentId.isNullOrEmpty() && !loginResponse.accessToken.isNullOrEmpty()){
-                sessionManager.fetchAuthToken()
-                Toast.makeText(baseContext,"Successful Login",Toast.LENGTH_SHORT).show()
+            binding.progressBar.visibility=View.GONE
+            if (!loginResponse.studentId.isNullOrEmpty()){
+//                sessionManager.fetchAuthToken()
+                Toast.makeText(baseContext,loginResponse.message,Toast.LENGTH_SHORT).show()
+                var editor=sharedPrefs.edit()
+                editor.putString("ACCESS_TOKEN",loginResponse.accessToken).apply()
+                editor.putString("STUDENT_ID",loginResponse.studentId).apply()
+//                editor.apply()
                 var intent=Intent(baseContext,ViewCoursesActivity::class.java)
                 startActivity(intent)
             }
         })
         userViewModel.loginFailedLiveData.observe(this, {error ->
             Toast.makeText(baseContext,error,Toast.LENGTH_SHORT).show()
+            //binding.tvlogin.visibility=View.VISIBLE
+            //binding .lotvloginError.text=error
         })
     }
 }
